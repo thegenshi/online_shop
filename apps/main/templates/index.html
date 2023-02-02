@@ -17,11 +17,12 @@
     </div>
   </div>
 </div>
+{% for i in category %}
+    <p><a required href="{% url 'category' i.slug %}">{{i.title}}</a></p>
+  {% endfor %}
 
-{% for i in messages %}
-  <h1>{{i}}</h1>
 
-{% endfor %}
+
 
 <div class="container" >
   {% for a in category %}

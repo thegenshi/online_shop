@@ -1,12 +1,17 @@
 {% load static %}
-
 <link rel="stylesheet" href="{% static 'sing_in.css'%}"> 
 <div class="logo">
  
 </div>
 <div class="box bg-img">
   <div class="content">
-
+{% if form.errors %}
+  {% for i in form %}
+    {% for error in i.errors %}
+      <h5>{{error|escape}}</h5>
+    {% endfor %}
+  {% endfor %}
+{% endif %}
     <h2>Sign<span> Up</span></h2>
 <form action="{% url 'registration'%}" method="POST">
   {% csrf_token %}

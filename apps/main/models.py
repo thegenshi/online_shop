@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Category(models.Model):
     title = models.CharField(max_length=255)
-
+    slug = models.SlugField(null=False, default='')
     def __str__(self) -> str:
         return self.title
 

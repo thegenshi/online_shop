@@ -6,9 +6,15 @@
 </div>
 <div class="box bg-img">
   <div class="content">
-
+    {% for i in messages %}
+    <h1>{{i}}</h1>
+  
+  {% endfor %}
+  
     <h2>Sign<span> In</span></h2>
-
+    {% if form.non_field_errors %}
+      <h5>{{form.non_field_errors}}</h5>
+    {% endif %}
     <form action="{% url 'login' %}" method="post">
       {% csrf_token %}
       <label for="{{form.username.for_id_label}}"></label>
@@ -28,7 +34,6 @@
     <br>
 
     <p class="f-pass">
-      <a href="#">forget password?</a>
       <a class="mt-5" style="color: #ffce00;" href="{% url 'main'%}"> Home </a>
     </p>
   </div>

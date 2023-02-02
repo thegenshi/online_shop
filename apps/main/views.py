@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from apps.main.models import Product, Category
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def main(request):
@@ -13,6 +14,7 @@ def info(request, id):
     info = Product.objects.get(id = id)
     return render(request, 'info.html', {'info':info})
 
+@login_required(login_url="login")
 def add_to_cart(request, id):
     cart_session = request.session.get('cart_session1', [])
     cart_session.append(id)
@@ -20,6 +22,7 @@ def add_to_cart(request, id):
     print(cart_session)
     return HttpResponseRedirect('/')
 
+@login_required(login_url="login")
 def cart(request):
     cart_session = request.session.get('cart_session1', [])
     amount = len(cart_session)
@@ -39,3 +42,18 @@ def remove(request, id):
     print(g)
     request.session['cart_session'] = g
     return HttpResponseRedirect('/')
+
+def search(request):
+    if request.method == "POST":
+        product = request.POST.get('product')
+        product_model = Product.objects.filter(title__contains = product)
+        return render(request , 'search.html', {'product':product_model})
+
+def category(request, slug):
+    category = Category.objects.get(slug = slug)
+    product = Product.objects.filter(category = category)
+    return render(request,'category.html',{'product':product, 'category':category})
+
+
+def contact_us(request):
+    return render(request, 'contact_us.html')
