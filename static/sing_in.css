@@ -12,12 +12,12 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url("https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+  background-image: -webkit-linear-gradient( top,#0e2025, #222023, #1e2c47 );
   color: #d0d0d0;
 }
 
 .box {
-  background-image: url("https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+  background-image: -webkit-linear-gradient( top, #222023, #1e2c47 );
   display: flex;
   justify-content: center;
   align-items: center;

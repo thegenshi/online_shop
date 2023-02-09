@@ -11,7 +11,7 @@
             {% endif %}
         </div>
         <div class="col-md-5 border-right">
-            <form action="{% url 'profil' %}" method="POST">
+            <form action="{% url 'profil' user.id %}" method="POST">
                 {% csrf_token %}
                 <div class="p-3 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">

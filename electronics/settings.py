@@ -137,3 +137,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #users
 
 AUTH_USER_MODEL = 'user.User'
+
+# Send email settings
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = "fayzali.2024@mail.ru"
+EMAIL_HOST_PASSWORD = "yqbtH1cpFzdDpvCEFtf3"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+# Celery
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKED = 'redis://127.0.0.1:6379'
