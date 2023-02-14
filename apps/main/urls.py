@@ -16,10 +16,11 @@ Including another URLconf
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 
-from apps.main.views import MainListView, InfoView, add_to_cart, CartView, remove, search, CategoryView, AboutusView
+from apps.main.views import BaseView, MainListView, InfoView, add_to_cart, CartView, remove, search, CategoryView, AboutusView, order
 
 urlpatterns = [
     path('', MainListView.as_view(), name='main'),
+    path('test', BaseView.as_view(extra_context={'title': 'Food delivery'}), name='test'),
     path('info/<int:id>', InfoView.as_view(), name='info'),
     path('add_to_cart/<int:id>', add_to_cart, name='add_to_cart'),
     path('cart/', login_required(CartView.as_view()), name='cart'),
@@ -27,4 +28,5 @@ urlpatterns = [
     path('contact_us/', AboutusView.as_view(), name='contact_us'),
     path('remove/<int:id>', remove, name='remove'),
     path('category/<slug:slug>', CategoryView.as_view(), name='category'),
+    path('order', order, name='order')
 ]

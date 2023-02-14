@@ -1,23 +1,37 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
-from apps.main.models import Product, Category
+from apps.main.models import Product, Category, Customer, Order
 from django.contrib.auth.decorators import login_required
 from django.views.generic.list import ListView
-
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.contrib import messages
 from django.views.generic.base import TemplateView
+from common.view import TitleMixin
+
 # Create your views here.
 
 # def main(request):
 #     product = Product.objects.all()
 #     category = Category.objects.all()
 #     return render(request, 'index.html', {'product':product, 'category':category})
+class BaseView(TitleMixin, TemplateView):
+    template_name = 'test.html'
+    title = 'Gadgets'
 
-class MainListView(ListView):
+
+class MainListView(TitleMixin, ListView):
     model = Product
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
         context = super(MainListView, self).get_context_data(**kwargs)
+        cache_category = cache.get('category')
+        if not cache_category:
+            category = Category.objects.all()
+            cache.set('category', category, 10)
+        else:
+            category = cache_category
         category = Category.objects.all()
         product = Product.objects.all()
         context['category'] = category
@@ -36,7 +50,6 @@ class InfoView(TemplateView):
         info = Product.objects.get(id = self.kwargs['id'])
         context['info'] = info
         return context
-
 
 
 @login_required(login_url="login")
@@ -75,12 +88,19 @@ def add_to_cart(request, id):
 #     context = {'products':products, 'amount':amount, 'total_price':total_price}
 #     return render(request, 'cart.html', context)
 
-class CartView(TemplateView):
+class CartView(TemplateView, TitleMixin):
     template_name = 'cart.html'
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
+        # cache_product = cache.get('product')
+        # if not cache_product:
+        #     product = Product.objects.filter(id__in = cart_session)
+        #     cache.set('product', product, 10)
+        # else:
+        #     product = cache_product
         cart_session = self.request.session.get('cart_session1', [])
         amount = len(cart_session)
+        count_of_product = len(cart_session)
         products = Product.objects.filter(id__in = cart_session)
         total_price = 0
         for i in products:
@@ -90,7 +110,9 @@ class CartView(TemplateView):
         context['products'] = products
         context['amount'] = amount
         context['total_price'] = total_price
+        context['count_of_product'] = count_of_product
         return context
+
 
 def remove(request, id):
     cart_session = request.session.get('cart_session1', [])
@@ -141,3 +163,31 @@ class CategoryView(ListView):
 
 class AboutusView(TemplateView):
     template_name = 'contact_us.html'
+
+
+def order(request):
+    if request.method == 'POST':
+        cart_session = request.session.get('cart_session', [])
+        if len(cart_session) == 0:
+            messages.error(request, 'Ваша корзина пустая', extra_tags='danger')
+            return redirect('cart')
+        else:
+            customer = Customer()
+            customer.name = request.POST.get('c_name')
+            customer.last_name = request.POST.get('c_lastname')
+            customer.number = request.POST.get('c_number')
+            customer.addres = request.POST.get('c_addres')
+            customer.message = request.POST.get('c_message')
+            customer.save()
+            for i in range(len(cart_session)):
+                order = Order()
+                order.product = Product.objects.get(id=cart_session[i])
+                order.customer = customer
+                order.price = order.product.price
+                order.phone = customer.number
+                order.addres = customer.addres
+                order.save()
+
+            request.session['cart_session'] = []
+            messages.error(request, 'Заказ успешно отправлено!', extra_tags='success')
+            return redirect('cart')

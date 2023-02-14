@@ -41,8 +41,14 @@ INSTALLED_APPS = [
     #apps
     'apps.main',
     'apps.user',
-
+    'debug_toolbar',
 ]
+
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'electronics.urls'
@@ -74,6 +83,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'electronics.wsgi.application'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -151,3 +169,6 @@ EMAIL_USE_SSL = False
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKED = 'redis://127.0.0.1:6379'
+
+
+

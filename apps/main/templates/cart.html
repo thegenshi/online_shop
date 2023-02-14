@@ -1,82 +1,130 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title%} {% endblock %}
 
 {% block content %}
-<div class="card">
-    <link rel="stylesheet" href="{% static 'cart.css'%}">    
-    <section class="h-100 h-custom" style="background-image: -webkit-linear-gradient( top,#0e2025, #222023, #1e2c47 );
-    ">
-        <div class="container py-5 h-100">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12">
-              <div class="card card-registration card-registration-2" style="border-radius: 15px;">
-                <div class="card-body p-0">
-                  <div class="row g-0">
-                    <div class="col-lg-8">
-                      <div class="p-5">
-                        <div class="d-flex justify-content-between align-items-center mb-5">
-                          <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
-                          <h6 class="mb-0 text-muted">{{amount}} items</h6>
-                        </div>
-                     
 
-                  <hr class="my-4">
-
-                    {% for product in products %}
-                  <div class="row mb-4 d-flex justify-content-between align-items-center">
-                    <div class="col-md-2 col-lg-2 col-xl-2">
-                      <img
-                        src="{{product.image.url}}"
-                        class="img-fluid rounded-3" alt="Cotton T-shirt">
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-xl-3">
-                      <h6 class="text-muted">{{product.title}}</h6>
-                    </div>
-                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                      <h6 class="mb-0">{{product.price}} сом</h6>
-                    </div>
-                    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                      <a href="{% url 'remove' product.id %}" class="text-muted"><i class="fas fa-times"></i></a>
-                    </div>
-                  </div>
+<section class="pt-5 pb-5">
+    <div class="container">
+      <div class="row w-100">
+          <div class="col-lg-12 col-md-12 col-12">
+              <h3 class="display-5 mb-2 text-center">Shopping cart</h3>
+              <p class="mb-5 text-center">
+                  <i class="text-info font-weight-bold">{{count_of_product}}</i> &nbsp; items in your cart</p>
+              <table id="shoppingCart" class="table table-condensed table-responsive">
+                  <thead>
+                      <tr>
+                          <th style="width:60%">Product</th>
+                          <th style="width:12%">Price</th>
+                          <th style="width:10%">Quantity</th>
+                          <th style="width:20%">Sum</th>
+                          <th style="width:20%">Remove</th>
+                          <th style="width:16%"></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+  
+                      {% for product in products %}
+                      <tr>
+                          <td data-th="Product">
+                              <div class="row">
+                                  <div class="col-md-3 text-left">
+                                      <img src="{{product.image.url}}" alt="" class="img-fluid d-none d-md-block rounded mb-2 shadow ">
+                                  </div>
+                                  <div class="col-md-9 text-left mt-sm-2">
+                                      <h4>{{product.name}}</h4>
+                                  </div>
+                              </div>
+                          </td>
+                          <td data-th="Price">{{product.price}}</td>
+                          <td data-th="Quantity">
+                             <!--<input type="number" class="form-control form-control-lg text-center" value="1">-->
+                                  {{product.count}}
+                          </td>
+                          <td data-th="TotalSum">
+                               {{product.sum}}
+                          </td>
+                          <td class="actions" data-th="">
+                            <a href="{% url 'remove' id=product.id %}">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
+                                  <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15h9.286zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1zM.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8H.8z"/>
+                                 </svg>
+                             </a>
+                          </td>
+                      </tr>
+                    </tbody>
                     {% endfor %}
-                  <hr class="my-4">
-
-                  <div class="pt-5">
-                    <h6 class="mb-0"><a href="{% url 'main'%}" class="text-body"><i
-                          class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
-                  </div>
+                </table>
+                <div class="float-right text-right">
+                    <h4>Total price:</h4>
+                    <h1>{{total_price}} som</h1>
                 </div>
+          </div>
+      </div>
+      <div class="row mt-4 d-flex align-items-center">
+          <div class="col-sm-6 order-md-2 text-right">
+              <a type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Checkout
+                </a>
+          </div>
+  
+    {% if messages  %}
+    {% for i in messages %}
+    <div class="alert alert-{{i.extra_tags}} d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+      <div>
+        {{i}}
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
+  <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
+      <a href="{% url 'main' %}">
+          <i class="fas fa-arrow-left mr-2"></i>Back to shop</a>
+        </div>
+    </div>
+  </div>
+  </section>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="col-lg-4 bg-grey">
-                <div class="p-5">
-                  <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
-                  <hr class="my-4">
-
-                  <div class="d-flex justify-content-between mb-4">
-                    <h5 class="text-uppercase">items </h5>
-                    <h5> {{amount}} </h5>
-                  </div>
-
-                  <hr class="my-4">
-                  <div class="d-flex justify-content-between mb-5">
-                    <h5 class="text-uppercase">Total price</h5>
-                    <h5>{{total_price}} сом</h5>
-                  </div>
-
-                  <a type="button" style="background-color: #ffce00; color: black;" href="{% url 'login' %}" class="btn btn-dark btn-block btn-lg"
-                    data-mdb-ripple-color="dark">Register</a>
-
-                </div>
+              <div class="modal-body">
+                <form method="POST" action="{% url 'order' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">First name:</label>
+                      <input type="text" class="form-control" id="recipient-name" name="c_name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Last name:</label>
+                      <input type="text" class="form-control" id="recipient-name" name="c_lastname">
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Phone number:</label>
+                      <input type="text" class="form-control" id="recipient-name" name="c_number">
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Address:</label>
+                      <input type="text" class="form-control" id="recipient-name" name="c_addres">
+                    </div>
+                    <div class="mb-3">
+                      <label for="message-text" class="col-form-label">Message:</label>
+                      <textarea class="form-control" id="message-text" name="c_message"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                  </form>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 
 {% endblock %}

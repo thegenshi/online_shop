@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load cache %}
 {% block content %}
 <div class="container mt-5">
   <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
@@ -25,10 +25,11 @@
 </div>
 <table style="background-image: -webkit-linear-gradient( top, #222023, #1e2c47 ); width: 11%; border-radius: 3%; color: #fff;">
   <thead><tr><th><h4>Категории</h4></th></tr></thead>
+  {% cache 500 sidebar %}
   {% for i in category %}
   <tbody>
   <tr>
-      <td><p><a style="color: #fff;" required href="{% url 'category' i.slug %}"><h5>{{i.title}}</h5></a></p></td>
+    <td><p><a style="color: #fff;" required href="{% url 'category' i.slug %}"><h5>{{i.title}}</h5></a></p></td>
   </tr>
   </tbody>
   {% endfor %}
@@ -69,5 +70,5 @@
   {% endfor %}
 </div>
 
-
+{% endcache %}
 {% endblock %}
